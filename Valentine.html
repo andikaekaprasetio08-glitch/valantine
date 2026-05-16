@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Valentine Ultra Edition</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<link rel="icon" type="image/svg+xml" href="cute-kawaii-heart-anime-manga-style-character-beautiful-cartoon-eyes-long-lashes-vector-illustration-365357519-removebg-preview.png">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
+body{
+height:100vh;
+background:linear-gradient(135deg,#ffd6e7,#ffc2da,#ffb3d1);
+display:flex;
+justify-content:center;
+align-items:center;
+overflow:hidden;
+}
+
+/* CARD */
+.card{
+background:white;
+padding:50px 40px;
+border-radius:28px;
+box-shadow:0 30px 60px rgba(0,0,0,.12);
+text-align:center;
+width:90%;
+max-width:500px;
+transition:.6s cubic-bezier(.16,1,.3,1);
+position:relative;
+}
+
+h1{color:#e91e63;margin-bottom:15px;font-weight:700;}
+p{color:#555;margin-bottom:25px;line-height:1.6;}
+
+button{
+padding:12px 26px;
+border:none;
+border-radius:40px;
+cursor:pointer;
+font-size:14px;
+margin:6px;
+transition:.3s ease;
+}
+
+.yes{background:#e91e63;color:white;}
+.yes:hover{transform:scale(1.08);}
+.no{background:#f5f5f5;color:#333;position:relative;}
+.hidden{display:none;}
+
+/* PREMIUM CHARACTER */
+.character-wrapper{
+position:absolute;
+top:5%;
+left:50%;
+transform:translateX(-50%);
+animation:float 5s cubic-bezier(.45,.05,.55,.95) infinite;
+z-index:10;
+filter:drop-shadow(0 20px 30px rgba(233,30,99,.25));
+transition:.4s;
+}
+
+@keyframes float{
+0%,100%{transform:translate(-50%,0px);}
+50%{transform:translate(-50%,-18px);}
+}
+
+/* Blush */
+.blush{
+fill:#ff8fa3;
+opacity:.4;
+transition:.3s;
+}
+
+/* Sparkle */
+.sparkle{
+position:absolute;
+font-size:14px;
+opacity:.6;
+animation:sparkleAnim 3s linear infinite;
+}
+@keyframes sparkleAnim{
+0%{transform:translateY(0) scale(1);}
+50%{transform:translateY(-15px) scale(1.3);}
+100%{transform:translateY(0) scale(1);}
+}
+
+/* Bounce happy */
+.happy{
+animation:bounce .7s cubic-bezier(.34,1.56,.64,1);
+}
+@keyframes bounce{
+0%{transform:translate(-50%,0);}
+40%{transform:translate(-50%,-40px);}
+70%{transform:translate(-50%,0);}
+100%{transform:translate(-50%,-15px);}
+}
+
+/* LOVE FALL */
+.love{
+position:absolute;
+font-size:20px;
+animation:fall 4s linear forwards;
+}
+@keyframes fall{
+0%{transform:translateY(0);}
+100%{transform:translateY(600px);opacity:0;}
+}
+
+/* FORM */
+input,textarea{
+width:90%;
+padding:10px;
+border-radius:15px;
+border:1px solid #ddd;
+margin-bottom:15px;
+}
+textarea{resize:none;height:80px;}
+
+.generate{background:#e91e63;color:white;}
+.download{background:#ff80ab;color:white;margin-top:10px;}
+
+/* GREETING CARD */
+.card-preview{
+margin-top:20px;
+padding:40px;
+border-radius:24px;
+background:linear-gradient(135deg,#ffb6d9,#ff80ab);
+color:white;
+position:relative;
+overflow:hidden;
+}
+.decor{
+position:absolute;
+font-size:24px;
+opacity:.7;
+}
+
+</style>
+</head>
+<body>
+
+<audio id="bgMusic" loop>
+<source src="https://cdn.pixabay.com/audio/2022/03/15/audio_3b3d3e1a9a.mp3" type="audio/mp3">
+</audio>
+
+<!-- PREMIUM CHARACTER -->
+<div class="character-wrapper" id="character">
+<svg width="140" height="140" viewBox="0 0 200 200">
+<circle cx="100" cy="110" r="60" fill="#ffffff"/>
+<circle cx="55" cy="55" r="25" fill="#ffffff"/>
+<circle cx="145" cy="55" r="25" fill="#ffffff"/>
+
+<ellipse id="eyeL" cx="80" cy="105" rx="8" ry="10" fill="#333"/>
+<ellipse id="eyeR" cx="120" cy="105" rx="8" ry="10" fill="#333"/>
+
+<circle cx="75" cy="120" r="10" class="blush"/>
+<circle cx="125" cy="120" r="10" class="blush"/>
+
+<path d="M85 125 Q100 140 115 125" stroke="#e91e63" stroke-width="4" fill="transparent" stroke-linecap="round"/>
+</svg>
+
+<div class="sparkle" style="left:-20px;top:30px;">✨</div>
+<div class="sparkle" style="right:-20px;top:50px;">✨</div>
+</div>
+
+<div class="card" id="questionCard">
+<h1>Will you be my Valentine?</h1>
+<p>This means more than you think 💗</p>
+<button class="yes" onclick="sayYes()">Yes 💕</button>
+<button class="no" id="noBtn">Really sure?</button>
+</div>
+
+<div class="card hidden" id="messageCard">
+<h1>Thank You 💖</h1>
+<p>
+............
+</p>
+<button class="generate" onclick="showForm()">Make a Valentine Card</button>
+</div>
+
+<div class="card hidden" id="formCard">
+<h1>Create Your Card</h1>
+<input type="text" id="nameInput" placeholder="Enter name">
+<textarea id="messageInput" placeholder="Write your message..."></textarea>
+<button class="generate" onclick="generateCard()">Generate</button>
+
+<div class="card-preview hidden" id="preview">
+<h2 id="cardTitle"></h2>
+<p id="cardMessage"></p>
+<div class="decor" style="top:10px;left:10px;">🌸</div>
+<div class="decor" style="bottom:10px;right:10px;">🌺</div>
+</div>
+
+<button class="download hidden" id="downloadBtn" onclick="downloadCard()">Download Card</button>
+</div>
+
+<script>
+
+/* Music */
+document.body.addEventListener("click",()=>{
+document.getElementById("bgMusic").play();
+},{once:true});
+
+/* No button runaway */
+let noBtn=document.getElementById("noBtn");
+noBtn.addEventListener("mouseover",()=>moveBtn());
+noBtn.addEventListener("touchstart",()=>moveBtn());
+function moveBtn(){
+noBtn.style.position="absolute";
+noBtn.style.left=Math.random()*80+"%";
+noBtn.style.top=Math.random()*80+"%";
+}
+
+/* Blink random */
+function blink(){
+let l=document.getElementById("eyeL");
+let r=document.getElementById("eyeR");
+l.setAttribute("ry","1");
+r.setAttribute("ry","1");
+setTimeout(()=>{
+l.setAttribute("ry","10");
+r.setAttribute("ry","10");
+},150);
+}
+setInterval(blink,2500+Math.random()*2000);
+
+/* YES */
+function sayYes(){
+document.getElementById("questionCard").classList.add("hidden");
+document.getElementById("messageCard").classList.remove("hidden");
+
+let char=document.getElementById("character");
+char.classList.add("happy");
+
+/* Heart eyes */
+document.getElementById("eyeL").outerHTML='<text x="68" y="110" font-size="22">❤</text>';
+document.getElementById("eyeR").outerHTML='<text x="108" y="110" font-size="22">❤</text>';
+
+/* Confetti */
+confetti({particleCount:180,spread:80,origin:{y:0.6}});
+
+/* Love rain */
+for(let i=0;i<30;i++){
+let love=document.createElement("div");
+love.className="love";
+love.innerHTML="💖";
+love.style.left=Math.random()*100+"vw";
+document.body.appendChild(love);
+setTimeout(()=>love.remove(),4000);
+}
+}
+
+function showForm(){
+document.getElementById("messageCard").classList.add("hidden");
+document.getElementById("formCard").classList.remove("hidden");
+}
+
+function generateCard(){
+let name=document.getElementById("nameInput").value;
+let message=document.getElementById("messageInput").value;
+if(!name||!message){alert("Please fill all fields 💕");return;}
+document.getElementById("cardTitle").innerText="For "+name;
+document.getElementById("cardMessage").innerText=message;
+document.getElementById("preview").classList.remove("hidden");
+document.getElementById("downloadBtn").classList.remove("hidden");
+}
+
+function downloadCard(){
+html2canvas(document.getElementById("preview")).then(canvas=>{
+let link=document.createElement("a");
+link.download="valentine-card.png";
+link.href=canvas.toDataURL();
+link.click();
+});
+}
+
+</script>
+</body>
+</html>
